@@ -34,6 +34,8 @@ This guide provides detailed step-by-step instructions for setting up the Slack 
    - `chat:write.public` - Post messages to channels without joining
    - `channels:read` - View basic information about public channels
    - `groups:read` - View basic information about private channels
+   - `files:write` - Upload files and images (required for image support)
+   - `files:read` - View files shared in channels (optional)
    - `users:read` - View people in a workspace (optional, for user info)
 
 ### 2.3 Install App to Workspace

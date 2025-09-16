@@ -39,6 +39,8 @@ pip install -r requirements.txt
    - `chat:write.public` - Send messages to public channels
    - `channels:read` - View basic channel info
    - `users:read` - View user info
+   - `files:write` - Upload files and images (required for image support)
+   - `files:read` - Read file information (optional)
 3. Install the app to your workspace
 4. Copy the Bot User OAuth Token
 
@@ -96,10 +98,40 @@ thread_ts = client.start_thread(
 )
 ```
 
+### Image Upload Usage
+
+```python
+# Upload image to main channel
+response = client.upload_file(
+    file_path="image.png",
+    initial_comment="Here's the screenshot",
+    title="Screenshot"
+)
+
+# Upload image to thread
+thread_ts = client.start_thread("Bug report with images")
+client.upload_file(
+    file_path="error_screenshot.png",
+    thread_ts=thread_ts,
+    initial_comment="Error screenshot attached",
+    title="Error Screenshot"
+)
+
+# Upload from bytes (e.g., generated image)
+image_bytes = generate_chart()  # Your image generation code
+client.upload_file(
+    file_content=image_bytes,
+    filename="chart.png",
+    thread_ts=thread_ts,
+    initial_comment="Generated chart"
+)
+```
+
 ### Run Examples
 
 ```bash
 python usage_example.py
+python test_image_upload.py  # Test image upload capabilities
 ```
 
 ## API Reference
@@ -123,6 +155,9 @@ Retrieve all messages in a thread.
 
 #### `get_active_threads()`
 Get all active thread IDs stored in the current session.
+
+#### `upload_file(file_path=None, file_content=None, filename=None, channel=None, thread_ts=None, initial_comment=None, title=None)`
+Upload a file or image to Slack. Supports both file paths and bytes content. Use `thread_ts` to upload to a thread.
 
 ## Thread Management
 

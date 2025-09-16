@@ -206,3 +206,83 @@ class SlackThreadClient:
             Dictionary of active threads with their metadata
         """
         return self.active_threads
+
+    def upload_file(
+        self,
+        file_path: str = None,
+        file_content: bytes = None,
+        filename: str = None,
+        channel: str = None,
+        thread_ts: str = None,
+        initial_comment: str = None,
+        title: str = None
+    ) -> Optional[Dict]:
+        """
+        Upload a file or image to Slack channel or thread
+
+        Args:
+            file_path: Path to local file (use this OR file_content)
+            file_content: File bytes content (use this OR file_path)
+            filename: Name for the file (required if using file_content)
+            channel: Channel ID
+            thread_ts: Thread timestamp for threading
+            initial_comment: Comment with the file
+            title: File title
+
+        Returns:
+            Response from Slack API or None on error
+        """
+        try:
+            channel = channel or self.default_channel
+
+            upload_kwargs = {
+                'channels': channel,
+                'initial_comment': initial_comment,
+                'title': title
+            }
+
+            if thread_ts:
+                upload_kwargs['thread_ts'] = thread_ts
+
+            if file_path:
+                # Upload from file path
+                response = self.client.files_upload_v2(
+                    file=file_path,
+                    **upload_kwargs
+                )
+                logger.info(f"File uploaded from path: {file_path}")
+            elif file_content and filename:
+                # Upload from bytes content
+                response = self.client.files_upload_v2(
+                    content=file_content,
+                    filename=filename,
+                    **upload_kwargs
+                )
+                logger.info(f"File uploaded from content: {filename}")
+            else:
+                logger.error("Must provide either file_path or (file_content + filename)")
+                return None
+
+            if response.get('ok'):
+                file_info = response.get('file', {})
+                result = {
+                    'ok': True,
+                    'file_id': file_info.get('id'),
+                    'url': file_info.get('url_private'),
+                    'permalink': file_info.get('permalink'),
+                    'thread_ts': thread_ts
+                }
+
+                if thread_ts:
+                    logger.info(f"File uploaded to thread: {thread_ts}")
+                else:
+                    logger.info(f"File uploaded to channel: {channel}")
+
+                return result
+
+        except SlackApiError as e:
+            logger.error(f"Error uploading file: {e.response['error']}")
+            return {'ok': False, 'error': str(e)}
+        except Exception as e:
+            logger.error(f"Unexpected error uploading file: {str(e)}")
+            return {'ok': False, 'error': str(e)}
