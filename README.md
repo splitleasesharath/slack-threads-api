@@ -1,6 +1,6 @@
 # Slack Threads API
 
-A simple Python client for sending messages to Slack with threading support using the Slack Web API.
+A lightweight Python client for sending messages to Slack with full threading support using the Slack Web API. Perfect for automation, notifications, and building conversation threads programmatically.
 
 ## Features
 
