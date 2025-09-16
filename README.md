@@ -41,6 +41,12 @@ pip install -r requirements.txt
    - `users:read` - View user info (optional)
    - `files:write` - Upload files and images (REQUIRED for image support)
    - `files:read` - Read file information (REQUIRED for image uploads with files_upload_v2)
+
+**⚠️ IMPORTANT**: After adding new scopes, you MUST:
+- Click "Reinstall to Workspace"
+- Copy the NEW Bot User OAuth Token (it changes!)
+- Update your .env with the new token
+
 3. Install the app to your workspace
 4. Copy the Bot User OAuth Token
 
