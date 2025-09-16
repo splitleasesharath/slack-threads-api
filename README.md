@@ -35,12 +35,12 @@ pip install -r requirements.txt
 
 1. Create a Slack app at https://api.slack.com/apps
 2. Add OAuth Scopes:
-   - `chat:write` - Send messages
+   - `chat:write` - Send messages (REQUIRED)
    - `chat:write.public` - Send messages to public channels
    - `channels:read` - View basic channel info
-   - `users:read` - View user info
-   - `files:write` - Upload files and images (required for image support)
-   - `files:read` - Read file information (optional)
+   - `users:read` - View user info (optional)
+   - `files:write` - Upload files and images (REQUIRED for image support)
+   - `files:read` - Read file information (REQUIRED for image uploads with files_upload_v2)
 3. Install the app to your workspace
 4. Copy the Bot User OAuth Token
 
@@ -100,6 +100,8 @@ thread_ts = client.start_thread(
 
 ### Image Upload Usage
 
+**Important**: Image uploads require both `files:write` AND `files:read` scopes in your Slack app configuration.
+
 ```python
 # Upload image to main channel
 response = client.upload_file(
@@ -130,8 +132,10 @@ client.upload_file(
 ### Run Examples
 
 ```bash
-python usage_example.py
-python test_image_upload.py  # Test image upload capabilities
+python usage_example.py              # Basic usage examples
+python test_thread_only.py          # Test thread functionality (text only)
+python test_image_upload.py         # Test image upload (requires files:read scope)
+python check_permissions.py         # Check your token's permissions
 ```
 
 ## API Reference
@@ -172,6 +176,21 @@ print(f"Thread ID: {thread_ts}")  # Save this ID
 client.reply_to_thread(thread_ts, "Following up on this inquiry...")
 ```
 
+## Verified Features & Test Results
+
+✅ **Fully Working:**
+- Send messages to main channel
+- Create new threads
+- Reply to existing threads using thread_ts
+- Send batch messages to threads with delays
+- Track active threads in session
+- Rich formatting with Slack blocks
+
+⚠️ **Image Uploads:**
+- Requires both `files:write` AND `files:read` OAuth scopes
+- The Slack SDK's `files_upload_v2` method needs `files:read` to fetch file info
+- Alternative: Use older `files_upload` method (deprecated but doesn't need files:read)
+
 ## Environment Variables
 
 Create a `.env` file with:
@@ -187,6 +206,7 @@ SLACK_CHANNEL_ID=C1234567890
 - Python 3.7+
 - slack-sdk 3.26.1
 - python-dotenv 1.0.0
+- Pillow 10.2.0 (optional, for image testing)
 
 ## License
 

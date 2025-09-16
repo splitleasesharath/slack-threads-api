@@ -30,13 +30,15 @@ This guide provides detailed step-by-step instructions for setting up the Slack 
 1. Scroll to **"Scopes"** section
 2. Under **"Bot Token Scopes"**, click **"Add an OAuth Scope"**
 3. Add these required scopes one by one:
-   - `chat:write` - Post messages in channels & conversations
+   - `chat:write` - Post messages in channels & conversations (REQUIRED)
    - `chat:write.public` - Post messages to channels without joining
    - `channels:read` - View basic information about public channels
    - `groups:read` - View basic information about private channels
-   - `files:write` - Upload files and images (required for image support)
-   - `files:read` - View files shared in channels (optional)
+   - `files:write` - Upload files and images (REQUIRED for image support)
+   - `files:read` - View files shared in channels (REQUIRED for files_upload_v2)
    - `users:read` - View people in a workspace (optional, for user info)
+
+   **Note**: For image uploads, you MUST have both `files:write` AND `files:read` scopes
 
 ### 2.3 Install App to Workspace
 1. Scroll back to the top of the OAuth page

@@ -245,16 +245,18 @@ class SlackThreadClient:
                 upload_kwargs['thread_ts'] = thread_ts
 
             if file_path:
-                # Upload from file path
-                response = self.client.files_upload_v2(
-                    file=file_path,
-                    **upload_kwargs
-                )
+                # Upload from file path using files_upload (doesn't require files:read)
+                with open(file_path, 'rb') as file:
+                    response = self.client.files_upload(
+                        file=file,
+                        filename=file_path.split('/')[-1].split('\\')[-1],
+                        **upload_kwargs
+                    )
                 logger.info(f"File uploaded from path: {file_path}")
             elif file_content and filename:
-                # Upload from bytes content
-                response = self.client.files_upload_v2(
-                    content=file_content,
+                # Upload from bytes content using files_upload
+                response = self.client.files_upload(
+                    file=file_content,
                     filename=filename,
                     **upload_kwargs
                 )
